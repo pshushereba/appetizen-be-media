@@ -16,9 +16,10 @@ app.use(cors());
 // });
 
 app.get("/", (req, res) => {
-  const newRoomID = uuidV4();
+  res.send("Hello");
+  // const newRoomID = uuidV4();
   //   res.status(200).json(newRoomID);
-  res.redirect(`/${newRoomID}`);
+  // res.redirect(`/${newRoomID}`);
 });
 
 // app.get("/:room", (req, res) => {
