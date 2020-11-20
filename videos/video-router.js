@@ -15,10 +15,7 @@ router.get("/:room", (req, res) => {
 });
 
 io.on("connection", (socket) => {
-  socket.on("join-room", (roomId, userId) => {
-    socket.join(roomId);
-    socket.to(roomId).broadcast.emit("user-connected", userId);
-  });
+  console.log(socket.roomId);
 });
 
 module.exports = router;
