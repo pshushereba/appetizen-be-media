@@ -8,7 +8,7 @@ const { v4: uuidV4 } = require("uuid");
 const chatNsp = io.of("/chat");
 const videoNsp = io.of("/video");
 
-// Create object to hold active users:
+// Create array to hold active users:
 const activeRooms = [];
 
 // Test to see number of sockets in chat namespace
@@ -48,7 +48,7 @@ chatNsp.on("connection", (socket) => {
     console.log(`${userID} connected to the chat in ${roomID}`);
     // console.log(socket.rooms);
     const activeUser = {};
-    activeUser.username = userID;
+    activeUser.streamId = userID;
     activeUser.room = roomID;
     activeRooms.push(activeUser);
   });
