@@ -11,6 +11,9 @@ const videoNsp = io.of("/video");
 // Create array to hold active users:
 const activeRooms = [];
 
+// Create Object to hold chat history for open rooms:
+const socketHistory = {};
+
 // Test to see number of sockets in chat namespace
 const socketCount = io.of("/chat").sockets.size;
 
@@ -43,20 +46,37 @@ app.get("/active", (req, res) => {
 // });
 
 chatNsp.on("connection", (socket) => {
-  console.log("a user connected to the chat");
+  let socketRoom;
   socket.on("join", (roomID, userID) => {
     console.log(`${userID} connected to the chat in ${roomID}`);
-    // console.log(socket.rooms);
+
+    // Create Object to hold info about acive user (streamer)
     const activeUser = {};
     activeUser.streamId = userID;
     activeUser.room = roomID;
     activeRooms.push(activeUser);
+
+    socket.join(roomID);
+    socketRoom = roomID;
+    socket.emit("joinResponse", socketHistory[socketRoom]);
   });
-  socket.on("chat", (msg) => {
-    io.broadcast(msg);
+
+  socket.on("chat", (data) => {
+    socket.broadcast.to(socketRoom).emit("chat", data.message);
+    socketHistory[socketRoom] = socketHistory[socketRoom]
+      ? [data.message, ...socketHistory[socketRoom]]
+      : [data.message];
   });
+
+  // socket.on("chat", (msg, room) => {
+  //   io.broadcast(msg);
+
+  // socketHistory[socketRoom] = socketHistory[socketRoom] ?
+  //   [data.message, ...socketHistory[socketRoom]] : [data.message]
+  // });
 });
 console.log(activeRooms);
+
 videoNsp.on("connection", (socket, stream) => {
   //console.log("Received a connection from the client");
   socket.on("video-chat", (message) => {
