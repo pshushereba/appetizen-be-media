@@ -62,10 +62,12 @@ chatNsp.on("connection", (socket) => {
   });
 
   socket.on("chat", (data) => {
+    console.log(data.message);
     socket.broadcast.to(socketRoom).emit("chat", data.message);
     socketHistory[socketRoom] = socketHistory[socketRoom]
       ? [data.message, ...socketHistory[socketRoom]]
       : [data.message];
+    console.log("socketHistory", socketHistory);
   });
 
   // socket.on("chat", (msg, room) => {
@@ -75,7 +77,6 @@ chatNsp.on("connection", (socket) => {
   //   [data.message, ...socketHistory[socketRoom]] : [data.message]
   // });
 });
-console.log(activeRooms);
 
 videoNsp.on("connection", (socket, stream) => {
   //console.log("Received a connection from the client");
