@@ -78,16 +78,16 @@ chatNsp.on("connection", (socket) => {
   // });
 });
 
-videoNsp.on("connection", (socket, stream) => {
-  //console.log("Received a connection from the client");
-  socket.on("video-chat", (message) => {
-    // console.log(message);
+videoNsp.on("connection", (socket) => {
+  socket.on("join", (roomID, username) => {
+    socket.join(roomID);
+    console.log(`${username} has joined video in ${roomID}`);
+    socket.broadcast.to(roomID).emit(`${username} has joined ${roomID}`);
   });
-  // console.log("stream", stream);
-  // socket.on("new-user", (foo) => {
-  // socket.emit(foo)
-  // })
-  // console.log(socket);
+
+  socket.on("viewer-connected", (data) => {
+    socket.broadcast.to(roomID).emit("viewer-connected");
+  });
 });
 
 module.exports = server;
