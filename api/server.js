@@ -88,6 +88,11 @@ videoNsp.on("connection", (socket) => {
   socket.on("viewer-connected", (data) => {
     socket.broadcast.to(roomID).emit("viewer-connected");
   });
+
+  socket.on("send-stream", (stream) => {
+    console.log("send stream accessed.");
+    socket.emit(stream);
+  });
 });
 
 module.exports = server;
