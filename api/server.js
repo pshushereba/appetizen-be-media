@@ -69,28 +69,22 @@ chatNsp.on("connection", (socket) => {
       : [data.message];
     console.log("socketHistory", socketHistory);
   });
-
-  // socket.on("chat", (msg, room) => {
-  //   io.broadcast(msg);
-
-  // socketHistory[socketRoom] = socketHistory[socketRoom] ?
-  //   [data.message, ...socketHistory[socketRoom]] : [data.message]
-  // });
 });
 
 videoNsp.on("connection", (socket) => {
   socket.on("join", (roomID, username) => {
     socket.join(roomID);
     console.log(`${username} has joined video in ${roomID}`);
-    socket.broadcast.to(roomID).emit(`${username} has joined ${roomID}`);
+    //socket.broadcast.to(roomID).emit(`${username} has joined ${roomID}`);
   });
 
-  socket.on("viewer-connected", (data) => {
-    socket.broadcast.to(roomID).emit("viewer-connected");
+  socket.on("viewer-connected", (roomID, username) => {
+    console.log("room/username", roomID, username);
+    socket.broadcast.to(roomID).emit("viewer-connected", roomID, username);
   });
 
   socket.on("send-stream", (stream) => {
-    console.log("send stream accessed.");
+    console.log("send stream accessed.", stream);
     socket.emit(stream);
   });
 });
