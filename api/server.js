@@ -51,10 +51,10 @@ chatNsp.on("connection", (socket) => {
     console.log(`${userID} connected to the chat in ${roomID}`);
 
     // Create Object to hold info about acive user (streamer)
-    const activeUser = {};
-    activeUser.streamId = userID;
-    activeUser.room = roomID;
-    activeRooms.push(activeUser);
+    // const activeUser = {};
+    // activeUser.streamId = userID;
+    // activeUser.room = roomID;
+    // activeRooms.push(activeUser);
 
     socket.join(roomID);
     socketRoom = roomID;
@@ -72,15 +72,24 @@ chatNsp.on("connection", (socket) => {
 });
 
 videoNsp.on("connection", (socket) => {
+  //let streamerID;
   socket.on("join", (roomID, username) => {
+    // Create Object to hold info about acive user (streamer)
+    const activeUser = {};
+    activeUser.streamId = userID;
+    activeUser.room = roomID;
+    activeRooms.push(activeUser);
     socket.join(roomID);
+    streamerID = peerID;
     console.log(`${username} has joined video in ${roomID}`);
     //socket.broadcast.to(roomID).emit(`${username} has joined ${roomID}`);
   });
 
   socket.on("viewer-connected", (roomID, username) => {
     console.log("room/username", roomID, username);
-    socket.broadcast.to(roomID).emit("viewer-connected", roomID, username);
+    socket.broadcast
+      .to(roomID)
+      .emit("viewer-connected", roomID, username, streamerID);
   });
 
   socket.on("send-stream", (stream) => {
