@@ -10,7 +10,7 @@ const videoNsp = io.of("/video");
 
 // Create array to hold active users:
 const activeRooms = [];
-
+console.log(activeRooms);
 // Create Object to hold chat history for open rooms:
 const socketHistory = {};
 
@@ -75,15 +75,25 @@ videoNsp.on("connection", (socket) => {
   //let streamerID;
   socket.on("join", (roomID, username, peerId) => {
     // Create Object to hold info about acive user (streamer)
+    // const activeUser = {};
+    // activeUser.streamId = username;
+    // activeUser.room = roomID;
+    // activeUser.peerId = peerId;
+    // activeRooms.push(activeUser);
+    socket.join(roomID);
+    // streamerID = peerID;
+    console.log(`${username} has joined video in ${roomID}`);
+    //socket.broadcast.to(roomID).emit(`${username} has joined ${roomID}`);
+  });
+
+  socket.on("streaming", (roomID, username, peerId) => {
+    // Create Object to hold info about acive user (streamer)
+    console.log("in streaming", roomID, username, peerId);
     const activeUser = {};
     activeUser.streamId = username;
     activeUser.room = roomID;
     activeUser.peerId = peerId;
     activeRooms.push(activeUser);
-    socket.join(roomID);
-    // streamerID = peerID;
-    console.log(`${username} has joined video in ${roomID}`);
-    //socket.broadcast.to(roomID).emit(`${username} has joined ${roomID}`);
   });
 
   socket.on("viewer-connected", (roomID, username, viewerPeerId) => {
