@@ -4,6 +4,7 @@ const server = require("http").createServer(app);
 const io = require("socket.io")(server);
 const cors = require("cors");
 const { v4: uuidV4 } = require("uuid");
+const bodyParser = require("body-parser");
 
 const chatNsp = io.of("/chat");
 const videoNsp = io.of("/video");
@@ -18,6 +19,7 @@ const socketHistory = {};
 const socketCount = io.of("/chat").sockets.size;
 
 app.use(cors());
+app.use(bodyParser.json());
 
 app.get("/", (req, res) => {
   res.send("Hello");
@@ -33,6 +35,15 @@ app.get("/new", (req, res) => {
 
 app.get("/active", (req, res) => {
   res.status(200).json(activeRooms);
+});
+
+app.post("/live", (req, res) => {
+  const streamer = req.body;
+  console.log(streamer);
+  // const activeUser = {};
+  // activeUser.streamId = userID;
+  // activeUser.room = roomID;
+  // activeRooms.push(activeUser);
 });
 
 // io.on("connection", (socket) => {
@@ -86,14 +97,14 @@ videoNsp.on("connection", (socket) => {
     //socket.broadcast.to(roomID).emit(`${username} has joined ${roomID}`);
   });
 
-  socket.on("streaming", (roomID, username, peerId) => {
+  socket.on("streaming", (peerId, roomID, username) => {
     // Create Object to hold info about acive user (streamer)
-    console.log("in streaming", roomID, username, peerId);
-    const activeUser = {};
-    activeUser.streamId = username;
-    activeUser.room = roomID;
-    activeUser.peerId = peerId;
-    activeRooms.push(activeUser);
+    console.log("in streaming", peerId, roomID, username);
+    // const activeUser = {};
+    // activeUser.streamId = username;
+    // activeUser.room = roomID;
+    // activeUser.peerId = peerId;
+    // activeRooms.push(activeUser);
   });
 
   socket.on("viewer-connected", (roomID, username, viewerPeerId) => {
