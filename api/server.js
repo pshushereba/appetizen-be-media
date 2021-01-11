@@ -40,32 +40,18 @@ app.get("/active", (req, res) => {
 app.post("/live", (req, res) => {
   const streamer = req.body;
   console.log(streamer);
-  // const activeUser = {};
-  // activeUser.streamId = userID;
-  // activeUser.room = roomID;
-  // activeRooms.push(activeUser);
+  const activeUser = {};
+  activeUser.streamId = streamer.user;
+  activeUser.room = streamer.room;
+  activeUser.peerId = streamer.peerID;
+  activeRooms.push(activeUser);
+  res.status(201).json(activeRooms);
 });
-
-// io.on("connection", (socket) => {
-//   socket.on("login", (userName) => {
-//     console.log(userName);
-//   });
-// });
-
-// app.get("/:room", (req, res) => {
-//   res.send({ roomId: req.params.room, userId: 1 });
-// });
 
 chatNsp.on("connection", (socket) => {
   let socketRoom;
   socket.on("join", (roomID, userID) => {
     console.log(`${userID} connected to the chat in ${roomID}`);
-
-    // Create Object to hold info about acive user (streamer)
-    // const activeUser = {};
-    // activeUser.streamId = userID;
-    // activeUser.room = roomID;
-    // activeRooms.push(activeUser);
 
     socket.join(roomID);
     socketRoom = roomID;
@@ -83,28 +69,10 @@ chatNsp.on("connection", (socket) => {
 });
 
 videoNsp.on("connection", (socket) => {
-  //let streamerID;
   socket.on("join", (roomID, username, peerId) => {
-    // Create Object to hold info about acive user (streamer)
-    // const activeUser = {};
-    // activeUser.streamId = username;
-    // activeUser.room = roomID;
-    // activeUser.peerId = peerId;
-    // activeRooms.push(activeUser);
     socket.join(roomID);
-    // streamerID = peerID;
     console.log(`${username} has joined video in ${roomID}`);
     //socket.broadcast.to(roomID).emit(`${username} has joined ${roomID}`);
-  });
-
-  socket.on("streaming", (peerId, roomID, username) => {
-    // Create Object to hold info about acive user (streamer)
-    console.log("in streaming", peerId, roomID, username);
-    // const activeUser = {};
-    // activeUser.streamId = username;
-    // activeUser.room = roomID;
-    // activeUser.peerId = peerId;
-    // activeRooms.push(activeUser);
   });
 
   socket.on("viewer-connected", (roomID, username, viewerPeerId) => {
