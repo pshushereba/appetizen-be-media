@@ -66,6 +66,18 @@ chatNsp.on("connection", (socket) => {
       : [data.message];
     console.log("socketHistory", socketHistory);
   });
+
+  socket.on("new_message", (data) => {
+    socket.broadcast.emit("new_message", data);
+  });
+
+  socket.on("typing", (data) => {
+    socket.broadcast.emit("typing", data);
+  });
+
+  socket.on("not_typing", (data) => {
+    socket.broadcast.emit("not_typing", data);
+  });
 });
 
 videoNsp.on("connection", (socket) => {
